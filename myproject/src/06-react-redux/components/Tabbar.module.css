@@ -1,0 +1,22 @@
+.tabbar{
+    display: flex;
+    list-style: none;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    line-height: 50px;
+    height: 50px; 
+      width:100%;
+      text-align: center;
+       overflow: hidden;
+    }
+
+ .tabbar ul{
+ 
+    flex:1; 
+    background-color: #fff;
+     
+}
+.tabbar li {
+    flex: 1;
+}

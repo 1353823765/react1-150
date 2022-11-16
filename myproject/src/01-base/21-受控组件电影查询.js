@@ -1,0 +1,71 @@
+import React, { Component } from "react";
+import axios from "axios";
+export default class Filmbox extends Component {
+  constructor() {
+    super();
+    this.state = {
+      //这个数据相当于所有的数据存在这里
+      Filmname: [],
+      // 输入框每一次输入的数据
+      Name: "",
+      //   Copyname: [],
+    };
+    axios({
+      method: "get",
+      url: "https://m.maizuo.com/gateway?cityId=210100&ticketFlag=1&k=3476139",
+      headers: {
+        "X-Client-Info":
+          '{"a":"3000","ch":"1002","v":"5.2.1","e":"16630692322081620324515841","bc":"210100"}',
+        "X-Host": " mall.film-ticket.cinema.list",
+      },
+    }).then((res) => {
+      console.log(res.data.data.cinemas);
+      this.setState({ Filmname: res.data.data.cinemas });
+      //   this.setState({ Copyname: res.data.data.cinemas });
+    });
+    // console.log(this.state.Filmname)
+  }
+  render() {
+    return (
+      <div>
+        <input
+          // onInput={this.tips}
+          value={this.state.Name}
+          onChange={(event) => {
+            this.setState({ Name: event.target.value });
+            //    console.log(this.state.Name)
+          }}
+        ></input>
+        {this.Copyname().map((item) => (
+          <div className="div1" key={item.cinemaId}>
+            {item.name}
+            <p>{item.address}</p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  //   tips = (event) => {
+      //通过数组的值与input输入框的值进行过滤
+  //     var newboss = this.state.Filmname.filter(
+  //       (item) =>
+  //         item.name.toUpperCase().includes(event.target.value.toUpperCase()) ||
+  //         item.address.toUpperCase().includes(event.target.value.toUpperCase())
+  //     );
+      //同步中this.state拿到的是原来的状态拿不到最新的状态
+      //如果想拿到最新的状态要在同步中将this.state当做异步来执行用一个setTimeout
+      //  console.log(this.state.Filmname)
+       //能得到最新的状态
+      // this.setState({ Filmname: newboss });
+      //      setTimeout(()=>{
+      //       console.log(this.state.Filmname)
+      //      },0)
+  //   };
+  Copyname() {
+    return this.state.Filmname.filter(
+      (item) =>
+        item.name.toUpperCase().includes(this.state.Name.toUpperCase()) ||
+        item.address.toUpperCase().includes(this.state.Name.toUpperCase())
+    );
+  }
+}

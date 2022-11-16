@@ -1,0 +1,126 @@
+import React, { Component, useEffect, useState } from "react";
+import axios from "axios";
+import "../css/02-上映电影.css";
+var bus = {
+  list: [],
+  sub(fn) {
+    this.list.push(fn);
+  },
+  pub(text) {
+    this.list.forEach((fn) => {
+      fn && fn(text);
+    });
+  },
+};
+export default class One extends Component {
+  state = {
+    checked: true,
+    checkedtwo: false,
+    type: 0,
+  };
+  render() {
+    return (
+      <div>
+        <input
+          type={"checkbox"}
+          checked={this.state.checked}
+          onChange={() => {
+            this.setState({
+              checked: !this.state.checked,
+              checkedtwo: false,
+              type: 0,
+            });
+          }}
+        ></input>
+        正在热映
+        <input
+          type={"checkbox"}
+          onChange={() => {
+            this.setState({
+              checkedtwo: !this.state.checkedtwo,
+              checked: false,
+              type: 1,
+            });
+          }}
+          checked={this.state.checkedtwo}
+        ></input>
+        即将上映
+        <Two myevent={this.state}></Two>
+      </div>
+    );
+  }
+}
+function Two(props) {
+  console.log(props);
+  const [info, setinfo] = useState([]);
+  useEffect(() => {
+    if (props.myevent.type === 0) {
+      axios({
+        url: " https://m.maizuo.com/gateway?cityId=140500&pageNum=1&pageSize=10&type=1&k=1827221",
+        method: "get",
+        headers: {
+          "X-Client-Info":
+            '{"a":"3000","ch":"1002","v":"5.2.1","e":"16643761542766826522017793"}',
+          "X-Host": "mall.film-ticket.film.list",
+        },
+      }).then(
+        (res) => (
+     setinfo(res.data.data.films)
+        )
+      );
+    } else {
+      axios({
+        url: "film.json",
+        method: "get",
+      }).then(
+        (res) => (
+      setinfo(res.data.data.films)
+        )
+      );
+    }
+  }, [props.myevent.type]);
+  return (
+    <div>
+      {info.map((item) => (
+        <Three key={item.filmId} {...item}>
+          {item.name}
+        </Three>
+      ))}
+      <Four></Four>
+    </div>
+  );
+}
+// 展示组件
+class Three extends Component {
+  render() {
+    // console.log(this.props)
+    var { name, poster, synopsis, category } = this.props;
+    return (
+      <div>
+        <img
+          src={poster}
+          alt={name}
+          onClick={() => {
+            bus.pub(synopsis);
+          }}
+        ></img>
+        <h3>{name}</h3>
+        <h3>{category}</h3>
+      </div>
+    );
+  }
+}
+class Four extends Component {
+  state = {
+    info: "",
+  };
+  render() {
+    bus.sub((text) => this.setState({ info: text }));
+    return (
+      <div className="div" style={{ left: "500px" }}>
+        <span>电影简介---</span>
+        {this.state.info}
+      </div>
+    );
+  }
+}

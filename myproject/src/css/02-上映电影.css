@@ -1,0 +1,21 @@
+
+img {
+  float: left;
+  height: 300px;
+}
+div {
+  overflow: hidden;
+  padding: 10px;
+}
+.div{
+    background-color: orange;
+    height: 150px;
+    width: 150px;
+    position: fixed;
+    overflow: scroll;
+    top: 100px;
+   left: 330px;
+    }
+    span{
+      color: blue;
+    }
